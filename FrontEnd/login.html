@@ -44,7 +44,7 @@
       const errorMessage = document.getElementById('error-message');
 
       loginForm.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Empêche le rechargement de la page
+        event.preventDefault(); // empeche recharge page
 
         const email = document.getElementById('Email').value;
         const password = document.getElementById('motDePasse').value;
@@ -61,16 +61,16 @@
           const result = await response.json();
 
           if (response.ok) {
-            // Stocker le token dans le localStorage
+            // stocker token dans localStorage
             localStorage.setItem('token', result.token);
             alert('Connexion réussie !');
-            window.location.href = 'dashboard.html'; // Redirection après succès
+            window.location.href = 'index.html'; // Redir après succès
           } else {
             // Afficher un message d'erreur
             throw new Error(result.message || 'Erreur de connexion');
           }
         } catch (error) {
-          // Affiche un message d'erreur pour l'utilisateur
+          // Affiche mess erreur connex pour utilisateur
           errorMessage.textContent = error.message;
         }
       });
