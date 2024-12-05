@@ -79,10 +79,11 @@ const setupFilters = () => {
     console.log("Boutons trouvés :", filterButtons);
 
     filterButtons.forEach((button) => {
-      console.log("Ajout d'un écouteur sur :", button);
       button.addEventListener("click", (event) => {
+        filterButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
         const filter = event.target.getAttribute("data-filter");
-        console.log(`Bouton cliqué : ${filter}`);
+
         displayWorks(filter);
       });
     });

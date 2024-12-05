@@ -263,8 +263,29 @@ footer nav ul {
   margin: 2em;
 }
 
+.filters {
+  display: flex; /* Active Flexbox */
+  justify-content: center; /* Centre les éléments horizontalement */
+  gap: 10px; /* Espace entre les boutons (facultatif) */
+}
+
+.filters button {
+  font-family: "Syne";
+  background-color: transparent; /* Par défaut, bouton transparent */
+  color: #1d6154; /* Texte noir par défaut */
+  border: 1px solid #ccc; /* Bordure grise */
+  padding: 10px 15px; /* Espacement interne */
+  border-radius: 20px; /* Coins arrondis */
+  cursor: pointer; /* Curseur de type "main" au survol */
+  margin-bottom: 40px;
+}
+
+.filters button:hover {
+  background-color: #ccc; /* Changement de fond au survol */
+}
+
 .filters button.active {
-  background-color: #007bff;
-  color: white;
-  border: none;
+  background-color: #1d6154; /* Fond bleu pour le bouton actif */
+  color: white; /* Texte blanc pour le bouton actif */
+  border: none; /* Pas de bordure pour le bouton actif */
 }
