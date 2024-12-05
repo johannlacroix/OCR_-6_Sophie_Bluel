@@ -42,10 +42,16 @@
 		</section>
 		<section id="portfolio">
 			<h2>Mes Projets</h2>
-			<div class="gallery">
-
+			<div class="filters">
+				<button data-filter="all">Tous</button>
+				<button data-filter="1">Objets</button>
+				<button data-filter="2">Appartements</button>
+				<button data-filter="3">Hotels & restaurants</button>
 			</div>
+
+			<div class="gallery"></div>
 		</section>
+
 		<section id="contact">
 			<h2>Contact</h2>
 			<p>Vous avez un projet ? Discutons-en !</p>
@@ -69,11 +75,7 @@
 		</nav>
 	</footer>
 	<script src="script.js"></script>
-	<script>
-		window.onload = () => {
-			getWorks();
-		};
-	</script>
+
 </body>
 
 </html>
