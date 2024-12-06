@@ -41,7 +41,14 @@
 			</article>
 		</section>
 		<section id="portfolio">
-			<h2>Mes Projets</h2>
+			<div id="galleryTitleAndModifier">
+				<h2>Mes Projets</h2>
+				<button id="edit-button" style="display: none;">
+					<img src="./assets/icons/Vector.png">
+					<p>modifier</p>
+				</button>
+
+			</div>
 			<div class="filters">
 				<button data-filter="all">Tous</button>
 				<button data-filter="1">Objets</button>
@@ -75,6 +82,16 @@
 		</nav>
 	</footer>
 	<script src="script.js"></script>
+	<div id="popup" class="popup hidden">
+		<div class="popup-content">
+			<button id="close-popup" class="close-button">&times;</button>
+			<h3>Modifier la galerie</h3>
+			<div class="gallery-thumbnails"></div>
+			<button id="add-photos" class="add-photos-button">Ajouter des photos</button>
+			<input type="file" id="file-input" accept="image/*" style="display: none;">
+
+		</div>
+	</div>
 
 </body>
 

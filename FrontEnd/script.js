@@ -96,4 +96,90 @@ const setupFilters = () => {
 window.onload = () => {
   getWorks(); // charge les travaux
   setupFilters(); // config filtres une fois le DOM chargé
+  const editButton = document.getElementById("edit-button");
+  const token = localStorage.getItem("token");
+
+  if (token && editButton) {
+    // utilisateur connecté et bouton apparait
+    editButton.style.display = "inline-block"; // affiche le bouton
+  }
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+  const editButton = document.getElementById("edit-button");
+  const popup = document.getElementById("popup");
+  const closePopupButton = document.getElementById("close-popup");
+  const galleryThumbnails = document.querySelector(".gallery-thumbnails");
+
+  // ouvrir la pop-up
+  editButton.addEventListener("click", () => {
+    fillGalleryThumbnails();
+    popup.classList.remove("hidden");
+  });
+
+  // fermer la popup
+  closePopupButton.addEventListener("click", () => {
+    popup.classList.add("hidden");
+  });
+
+  // remplir miniatures de la galerie
+  function fillGalleryThumbnails() {
+    galleryThumbnails.innerHTML = ""; // vider anciennes miniatures
+
+    worksData.forEach((work, index) => {
+      const thumbnailContainer = document.createElement("div");
+      thumbnailContainer.classList.add("thumbnail-container");
+
+      const imgElement = document.createElement("img");
+      imgElement.src = work.imageUrl;
+      imgElement.alt = work.title;
+
+      const deleteIcon = document.createElement("img");
+      deleteIcon.src = "./assets/icons/trash.png"; // chemin vers icône poubelle
+      deleteIcon.alt = "Supprimer";
+      deleteIcon.classList.add("delete-icon");
+
+      // ajouter icône poubelle sur miniatures
+      thumbnailContainer.appendChild(imgElement);
+      thumbnailContainer.appendChild(deleteIcon);
+      galleryThumbnails.appendChild(thumbnailContainer);
+
+      // ecouter clic sur icône poubelle
+      deleteIcon.addEventListener("click", () => {
+        deleteImage(index);
+      });
+    });
+  }
+
+  // fonction pour supprimer une image de la galerie
+  function deleteImage(index) {
+    if (confirm("Voulez-vous vraiment supprimer cette image ?")) {
+      worksData.splice(index, 1); // Supp. image du tableau des data
+      fillGalleryThumbnails(); // Mise à jour de affichage miniatures
+    }
+  }
+
+  // explorateur de fichiers pr ajouter photo
+  const addPhotosButton = document.getElementById("add-photos");
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*";
+  fileInput.style.display = "none";
+  document.body.appendChild(fileInput);
+
+  // ouvrir l'explorateur de fichiers quand clic Ajouter des photos
+  addPhotosButton.addEventListener("click", () => {
+    fileInput.click();
+  });
+
+  // selection des fichiers
+  fileInput.addEventListener("change", (event) => {
+    const files = event.target.files;
+    console.log("Fichiers sélectionnés :", files);
+
+    // Ex: pr afficher noms de fichiers ds console
+    for (const file of files) {
+      console.log(`Nom du fichier : ${file.name}`);
+    }
+  });
+});
