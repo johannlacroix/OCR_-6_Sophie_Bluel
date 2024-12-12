@@ -1,7 +1,5 @@
 const url = "http://localhost:5678/api/works";
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1MTg3NDkzOSwiZXhwIjoxNjUxOTYxMzM5fQ.JGN1p8YIfR-M-5eQ-Ypy6Ima5cKA4VbfL2xMr2MgHm4";
-console.log("Le script est chargé !");
+const token = localStorage.getItem("token");
 
 let worksData = []; // Var pour stocker data des travaux
 
@@ -9,12 +7,16 @@ let worksData = []; // Var pour stocker data des travaux
 const getWorks = async () => {
   try {
     console.log("Tentative de récupération des données...");
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    const token = localStorage.getItem("token"); // Récupérer le token depuis localStorage
+    if (token) {
+      headers.Authorization = `Bearer ${token}`; // Ajouter l'autorisation si un token existe
+    }
     const response = await fetch(url, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers,
     });
 
     if (!response.ok)
@@ -30,7 +32,7 @@ const getWorks = async () => {
   }
 };
 
-// Fonct pr afficher travaux /filtre
+// Fonction pour afficher les travaux avec un filtre
 const displayWorks = (filter) => {
   try {
     const worksContainer = document.querySelector(".gallery");
@@ -46,7 +48,7 @@ const displayWorks = (filter) => {
         ? worksData
         : worksData.filter((work) => work.categoryId === parseInt(filter));
 
-    // générer éléments HTML pr chaque travail
+    // générer éléments HTML pour chaque travail
     filteredWorks.forEach((work) => {
       const workElement = document.createElement("figure");
 
@@ -66,7 +68,7 @@ const displayWorks = (filter) => {
   }
 };
 
-// fonct° pour configurer filtres
+// Fonction pour configurer les filtres
 const setupFilters = () => {
   try {
     const filterButtons = document.querySelectorAll(".filters button");
@@ -92,94 +94,158 @@ const setupFilters = () => {
   }
 };
 
-// initialise script js au chargmnt de la page
-window.onload = () => {
-  getWorks(); // charge les travaux
-  setupFilters(); // config filtres une fois le DOM chargé
-  const editButton = document.getElementById("edit-button");
-  const token = localStorage.getItem("token");
+// Gère l'affichage des boutons Login et Logout
+const handleAuthButtons = () => {
+  const loginButton = document.getElementById("login-button");
+  const logoutButton = document.getElementById("logout-button");
 
-  if (token && editButton) {
-    // utilisateur connecté et bouton apparait
-    editButton.style.display = "inline-block"; // affiche le bouton
+  // Si un token est présent, l'utilisateur est connecté
+  if (token) {
+    if (logoutButton) {
+      logoutButton.style.display = "inline-block";
+    }
+    if (loginButton) {
+      loginButton.style.display = "none";
+    }
+
+    // Gestion de la déconnexion
+    logoutButton.addEventListener("click", () => {
+      // Supprimer le token du localStorage pour déconnecter l'utilisateur
+      localStorage.removeItem("token");
+      alert("Vous êtes déconnecté !");
+      window.location.reload(); // Recharger la page pour mettre à jour l'affichage
+    });
+  } else {
+    // Si aucun token n'est présent, l'utilisateur n'est pas connecté
+    if (loginButton) {
+      loginButton.style.display = "inline-block";
+    }
+    if (logoutButton) {
+      logoutButton.style.display = "none";
+    }
+
+    // Optionnel : Ajouter un comportement pour le bouton Login
+    loginButton.addEventListener("click", () => {
+      window.location.href = "login.html"; // Rediriger vers la page de connexion
+    });
   }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+// Fonction pour supprimer un travail (à adapter selon votre API)
+const deleteWork = async (id, thumbnail) => {
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    const token = localStorage.getItem("token"); // Récupérer le token depuis localStorage
+    if (token) {
+      headers.Authorization = `Bearer ${token}`; // Ajouter l'autorisation si un token existe
+    }
+
+    const response = await fetch(`${url}/${id}`, {
+      method: "DELETE",
+      headers,
+    });
+
+    if (!response.ok) {
+      throw new Error("Erreur lors de la suppression du travail.");
+    }
+
+    alert("Le travail a été supprimé.");
+    // Supprimer la miniature dans la galerie de la modale
+    thumbnail.remove();
+    getWorks(); // Recharger les travaux après suppression
+  } catch (error) {
+    console.error("Erreur dans deleteWork :", error);
+  }
+};
+
+// Fonction pour remplir la galerie dans la modale avec les icônes de suppression
+const populateModalGallery = () => {
+  const galleryThumbnails = document.querySelector(".gallery-thumbnails");
+  if (!galleryThumbnails) return;
+
+  galleryThumbnails.innerHTML = ""; // Nettoie les miniatures existantes
+
+  worksData.forEach((work) => {
+    const thumbnail = document.createElement("div");
+    thumbnail.classList.add("thumbnail");
+
+    const img = document.createElement("img");
+    img.src = work.imageUrl;
+    img.alt = work.title;
+
+    // Bouton de suppression avec l'icône Trash.png
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add("delete-button"); // Ajout d'une classe pour styliser
+    const trashIcon = document.createElement("img");
+    trashIcon.src = "./assets/icons/Trash.png";
+    trashIcon.alt = "Supprimer";
+    trashIcon.style.width = "24px"; // Vous pouvez ajuster la taille ici
+    trashIcon.style.height = "24px";
+
+    deleteButton.appendChild(trashIcon);
+    deleteButton.addEventListener("click", () => {
+      deleteWork(work.id, thumbnail); // Passe aussi la miniature à supprimer
+    });
+
+    thumbnail.appendChild(img);
+    thumbnail.appendChild(deleteButton);
+    galleryThumbnails.appendChild(thumbnail);
+  });
+};
+
+// Initialisation du script au chargement de la page
+window.onload = () => {
+  const token = localStorage.getItem("token"); // Vérifie si un token est présent
   const editButton = document.getElementById("edit-button");
+  const filtersContainer = document.querySelector(".filters");
   const popup = document.getElementById("popup");
   const closePopupButton = document.getElementById("close-popup");
-  const galleryThumbnails = document.querySelector(".gallery-thumbnails");
 
-  // ouvrir la pop-up
-  editButton.addEventListener("click", () => {
-    fillGalleryThumbnails();
-    popup.classList.remove("hidden");
-  });
+  // Gérer l'affichage du bouton "modifier"
+  if (editButton) {
+    if (token) {
+      // Si un token est présent, afficher le bouton
+      editButton.style.display = "inline-block";
+    } else {
+      // Si aucun token n'est présent, masquer le bouton
+      editButton.style.display = "none";
+    }
+  }
 
-  // fermer la popup
-  closePopupButton.addEventListener("click", () => {
-    popup.classList.add("hidden");
-  });
+  // Gérer l'affichage des filtres
+  if (filtersContainer) {
+    if (token) {
+      filtersContainer.style.display = "none";
+    } else {
+      filtersContainer.style.display = "block";
+      filtersContainer.style.textAlign = "center"; // Assurez-vous de centrer
+    }
+  }
 
-  // remplir miniatures de la galerie
-  function fillGalleryThumbnails() {
-    galleryThumbnails.innerHTML = ""; // vider anciennes miniatures
+  // Vérifier si les éléments existent dans le DOM
+  if (editButton && popup && closePopupButton) {
+    // Ouvrir la modale lorsque "modifier" est cliqué
+    editButton.addEventListener("click", () => {
+      populateModalGallery(); // Charger la galerie de la modale
+      popup.classList.remove("hidden"); // Affiche la modale
+    });
 
-    worksData.forEach((work, index) => {
-      const thumbnailContainer = document.createElement("div");
-      thumbnailContainer.classList.add("thumbnail-container");
+    // Fermer la modale lorsque le bouton "fermer" est cliqué
+    closePopupButton.addEventListener("click", () => {
+      popup.classList.add("hidden"); // Cache la modale
+    });
 
-      const imgElement = document.createElement("img");
-      imgElement.src = work.imageUrl;
-      imgElement.alt = work.title;
-
-      const deleteIcon = document.createElement("img");
-      deleteIcon.src = "./assets/icons/trash.png"; // chemin vers icône poubelle
-      deleteIcon.alt = "Supprimer";
-      deleteIcon.classList.add("delete-icon");
-
-      // ajouter icône poubelle sur miniatures
-      thumbnailContainer.appendChild(imgElement);
-      thumbnailContainer.appendChild(deleteIcon);
-      galleryThumbnails.appendChild(thumbnailContainer);
-
-      // ecouter clic sur icône poubelle
-      deleteIcon.addEventListener("click", () => {
-        deleteImage(index);
-      });
+    // Fermer la modale si l'utilisateur clique à l'extérieur de la popup
+    popup.addEventListener("click", (event) => {
+      if (event.target === popup) {
+        popup.classList.add("hidden");
+      }
     });
   }
 
-  // fonction pour supprimer une image de la galerie
-  function deleteImage(index) {
-    if (confirm("Voulez-vous vraiment supprimer cette image ?")) {
-      worksData.splice(index, 1); // Supp. image du tableau des data
-      fillGalleryThumbnails(); // Mise à jour de affichage miniatures
-    }
-  }
-
-  // explorateur de fichiers pr ajouter photo
-  const addPhotosButton = document.getElementById("add-photos");
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = "image/*";
-  fileInput.style.display = "none";
-  document.body.appendChild(fileInput);
-
-  // ouvrir l'explorateur de fichiers quand clic Ajouter des photos
-  addPhotosButton.addEventListener("click", () => {
-    fileInput.click();
-  });
-
-  // selection des fichiers
-  fileInput.addEventListener("change", (event) => {
-    const files = event.target.files;
-    console.log("Fichiers sélectionnés :", files);
-
-    // Ex: pr afficher noms de fichiers ds console
-    for (const file of files) {
-      console.log(`Nom du fichier : ${file.name}`);
-    }
-  });
-});
+  getWorks(); // Charge les travaux
+  setupFilters(); // Configure les filtres
+  handleAuthButtons(); // Gère l'affichage des boutons Login/Logout
+};

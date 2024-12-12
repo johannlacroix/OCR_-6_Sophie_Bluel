@@ -20,7 +20,8 @@
 			<ul>
 				<li>projets</li>
 				<li>contact</li>
-				<li><a href="login.html">login</a></li>
+				<li><a id="login-button" style="display: none;" href="login.html">login</a></li>
+				<li><a id="logout-button" style="display: none;" href="index.html">logout</a></li>
 				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 			</ul>
 		</nav>
@@ -43,7 +44,7 @@
 		<section id="portfolio">
 			<div id="galleryTitleAndModifier">
 				<h2>Mes Projets</h2>
-				<button id="edit-button" style="display: none;">
+				<button id="edit-button" style="display:none;">
 					<img src="./assets/icons/Vector.png">
 					<p>modifier</p>
 				</button>
@@ -82,16 +83,27 @@
 		</nav>
 	</footer>
 	<script src="script.js"></script>
+	<!-- Modale de modification de la galerie -->
 	<div id="popup" class="popup hidden">
 		<div class="popup-content">
+			<!-- Bouton de fermeture de la modale -->
 			<button id="close-popup" class="close-button">&times;</button>
 			<h3>Modifier la galerie</h3>
+
+			<!-- Galerie des vignettes à modifier -->
 			<div class="gallery-thumbnails"></div>
+
+			<!-- Bouton pour ajouter des photos -->
 			<button id="add-photos" class="add-photos-button">Ajouter des photos</button>
 			<input type="file" id="file-input" accept="image/*" style="display: none;">
 
+			<!-- Bouton de suppression avec icône -->
+			<button id="delete-button" class="delete-button">
+				<img src="./assets/icons/Trash.png" alt="Supprimer">
+			</button>
 		</div>
 	</div>
+
 
 </body>
 

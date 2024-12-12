@@ -32,3 +32,16 @@ loginForm.addEventListener("submit", async (event) => {
     console.error("Erreur lors de la connexion :", error);
   }
 });
+
+// Gestion de la déconnexion
+const logout = () => {
+  localStorage.removeItem("token"); // Supprime le token
+  alert("Vous êtes déconnecté.");
+  window.location.reload(); // Recharge la page pour actualiser l'état
+};
+
+// Attacher la déconnexion à un bouton
+const logoutButton = document.getElementById("logout-button");
+if (logoutButton) {
+  logoutButton.addEventListener("click", logout);
+}
