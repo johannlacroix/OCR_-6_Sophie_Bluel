@@ -83,26 +83,49 @@
 		</nav>
 	</footer>
 	<script src="script.js"></script>
-	<!-- Modale de modification de la galerie -->
+
+	<!-- Modale galerie -->
 	<div id="popup" class="popup hidden">
 		<div class="popup-content">
-			<!-- Bouton de fermeture de la modale -->
+			<!-- Bouton fermeture modale -->
 			<button id="close-popup" class="close-button">&times;</button>
 			<h3>Modifier la galerie</h3>
 
-			<!-- Galerie des vignettes à modifier -->
+			<!-- galerie vignettes à modifier -->
 			<div class="gallery-thumbnails"></div>
 
-			<!-- Bouton pour ajouter des photos -->
+			<!-- Bouton ajouter photos -->
 			<button id="add-photos" class="add-photos-button">Ajouter des photos</button>
 			<input type="file" id="file-input" accept="image/*" style="display: none;">
 
-			<!-- Bouton de suppression avec icône -->
+			<!-- Bouton suppression -->
 			<button id="delete-button" class="delete-button">
 				<img src="./assets/icons/Trash.png" alt="Supprimer">
 			</button>
 		</div>
 	</div>
+
+	<!-- modale ajouter photos -->
+	<div id="add-photo-form" class="hidden">
+		<h3>Ajout photo</h3>
+		<div class="form-group">
+			<div class="image-placeholder">
+				<button id="upload-photo-button">+ Ajouter une photo</button>
+				<p>jpg. png : 4mo max</p>
+			</div>
+			<input type="file" id="photo-upload" accept="image/png, image/jpeg" style="display:none">
+		</div>
+		<label for="photo-title">Titre</label>
+		<input type="text" id="photo-title" placeholder="Titre de la photo">
+		<label for="photo-category">Catégorie</label>
+		<select id="photo-category">
+			<option value="1">Objets</option>
+			<option value="2">Appartements</option>
+			<option value="3">Hotels & restaurants</option>
+		</select>
+		<button id="validate-photo-button">Valider</button>
+	</div>
+
 
 
 </body>
