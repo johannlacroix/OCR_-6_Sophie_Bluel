@@ -20,7 +20,6 @@ loginForm.addEventListener("submit", async (event) => {
       // stocker token dans localStorage
       localStorage.setItem("token", result.token);
 
-      alert("Connexion réussie !");
       window.location.href = "index.html"; // vers la homepage
     } else {
       // si erreurs côté serveur

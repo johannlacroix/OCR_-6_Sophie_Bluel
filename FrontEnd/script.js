@@ -207,7 +207,7 @@ window.onload = () => {
   if (editButton) {
     if (token) {
       // Si un token est présent, afficher le bouton
-      editButton.style.display = "inline-block";
+      editButton.style.display = "flex";
     } else {
       // Si aucun token n'est présent, masquer le bouton
       editButton.style.display = "none";
