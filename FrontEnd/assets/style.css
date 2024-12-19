@@ -380,12 +380,13 @@ footer nav ul {
   align-items: center;
   gap: 3px;
   cursor: pointer;
+  margin-left: 10px;
 }
 
 .delete-button {
-  position: absolute; /* Positionnement par rapport au conteneur parent */
-  top: 5px; /* Décalage du haut */
-  right: 5px; /* Décalage de la droite */
+  position: absolute;
+  top: 5px;
+  right: 5px;
   background-color: black;
   border: none;
   border-radius: 3px;
@@ -421,7 +422,11 @@ footer nav ul {
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
   padding: 20px;
   z-index: 1001;
-  /* display: none; Par défaut, caché */
+  text-align: center; /* Centre le texte et les éléments */
+}
+
+#add-photo-form > * {
+  margin: 0 auto; /* Centre chaque élément dans la modale */
 }
 
 #add-photo-form h3 {
@@ -433,24 +438,136 @@ footer nav ul {
   margin-bottom: 20px;
 }
 
-#add-photo-form input,
+#add-photo-form input[type="text"],
 #add-photo-form select {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 300px; /* Même largeur fixe pour tous */
+  padding: 10px; /* Ajouter un espace intérieur */
+  margin: 10px auto; /* Centrer et espacer les champs */
+  border: 1px solid #ccc; /* Bordure discrète */
+  border-radius: 4px; /* Coins légèrement arrondis */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Ajouter une ombre légère */
+  display: block; /* S'assurer qu'ils prennent une ligne entière */
+  text-align: left; /* Alignement du texte à gauche */
+  box-sizing: border-box; /* Inclus padding et bordures dans la largeur */
+  margin-top: 20px;
+}
+
+#add-photo-form input[type="text"]:focus,
+#add-photo-form select:focus {
+  outline: none; /* Supprimer l'effet de focus par défaut */
+  border-color: #1d6154; /* Couleur de bordure au focus */
+  box-shadow: 0px 4px 14px rgba(29, 97, 84, 0.4); /* Ombre plus marquée au focus */
 }
 
 #add-photo-form button {
-  background-color: #1d6154;
-  color: white;
+  background-color: #cbd6dc;
+  font-size: small;
+  color: black;
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 #add-photo-form button:hover {
-  background-color: #15473e;
+  background-color: #a7a7a7;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #e8f1f6;
+  width: 420px;
+  width: 169px;
+}
+
+.image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #e8f1f6;
+  width: 420px;
+  width: 169px;
+  padding: 20px;
+  padding-left: 125px;
+  padding-right: 125px;
+}
+
+.defaultImage {
+  width: 76px;
+  height: 76px;
+}
+
+/* Bouton "+ Ajouter photo" */
+#upload-photo-button {
+  background-color: #e0e0e0; /* Couleur de fond gris clair */
+  color: black; /* Texte noir */
+  border: none; /* Supprime les bordures */
+  border-radius: 20px; /* Arrondi des coins */
+  padding: 10px 20px; /* Espacement intérieur */
+  font-size: 16px; /* Taille du texte */
+  cursor: pointer; /* Curseur en forme de main */
+  display: inline-block; /* Assure un bon affichage */
+  text-align: center; /* Centre le texte */
+  transition: all 0.3s ease; /* Effet de transition sur hover */
+}
+
+/* Hover sur "+ Ajouter photo" */
+#upload-photo-button:hover {
+  background-color: #cccccc; /* Couleur légèrement plus foncée */
+  color: black; /* Maintient le texte noir */
+}
+
+/* Bouton "Valider" */
+#add-photo-form #validate-photo-button {
+  background-color: #a7a7a7; /* Couleur de fond verte */
+  color: white; /* Texte blanc */
+  border: none; /* Supprime les bordures */
+  border-radius: 20px; /* Arrondi des coins */
+  padding: 10px 20px; /* Espacement intérieur */
+  font-size: 16px; /* Taille du texte */
+  cursor: pointer; /* Curseur en forme de main */
+  display: inline-block; /* Assure un bon affichage */
+  text-align: center; /* Centre le texte */
+  transition: all 0.3s ease; /* Effet de transition sur hover */
+  font-size: small;
+  width: 200px;
+}
+
+/* Hover sur "Valider" */
+#add-photo-form #validate-photo-button:hover {
+  background-color: #cbd6dc; /* Couleur verte plus sombre */
+  color: white; /* Maintient le texte blanc */
+}
+
+#add-photo-form #back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none !important; /* Pas de fond */
+  border: none !important; /* Pas de bordures */
+  font-size: 18px; /* Taille de l'icône */
+  cursor: pointer;
+  color: black; /* Couleur noire pour l'icône visible */
+  padding: 0; /* Supprime les marges internes */
+  width: auto;
+  height: auto;
+}
+
+#back-button:hover {
+  color: gray; /* Couleur grise au survol */
+}
+
+#back-button i {
+  color: black !important; /* Forcer la couleur de l'icône pour la rendre visible */
+  display: inline-block;
+  line-height: normal; /* S'assure que l'icône s'affiche correctement */
+  vertical-align: middle;
 }

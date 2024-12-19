@@ -64,7 +64,7 @@
 				<div class="popup-content">
 					<!-- Bouton fermeture modale -->
 					<button id="close-popup" class="close-button">&times;</button>
-					<h3>Modifier la galerie</h3>
+					<h3>Galerie photo</h3>
 
 					<!-- galerie vignettes à modifier -->
 					<div class="gallery-thumbnails"></div>
@@ -77,16 +77,20 @@
 
 			<!-- modale ajouter photos -->
 			<div id="add-photo-form" class="hidden">
+				<button id="back-button" class="back-button">
+					<i class="fa-solid fa-arrow-left"></i>
+				</button>
 				<h3>Ajout photo</h3>
 				<div class="form-group">
 					<div class="image-placeholder">
+						<img class="defaultImage" src="assets/icons/image.png" alt="Illustration par défaut"></img>
 						<button id="upload-photo-button">+ Ajouter une photo</button>
 						<p>jpg. png : 4mo max</p>
 					</div>
 					<input type="file" id="photo-upload" accept="image/png, image/jpeg" style="display:none">
 				</div>
 				<label for="photo-title">Titre</label>
-				<input type="text" id="photo-title" placeholder="Titre de la photo">
+				<input type="text" id="photo-title" placeholder="">
 				<label for="photo-category">Catégorie</label>
 				<select id="photo-category">
 					<option value="1">Objets</option>

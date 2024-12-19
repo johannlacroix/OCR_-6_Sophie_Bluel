@@ -193,6 +193,19 @@ const setupModals = () => {
   });
 };
 
+// Bouton flèche pour revenir à la modale précédente
+const backButton = document.getElementById("back-button");
+const addPhotoForm = document.getElementById("add-photo-form");
+const popup = document.getElementById("popup");
+
+if (backButton && addPhotoForm && popup) {
+  backButton.addEventListener("click", () => {
+    addPhotoForm.classList.add("hidden"); // Cache la modale d'ajout
+    popup.classList.remove("hidden"); // Réaffiche la modale précédente
+    console.log("Retour à la modale principale 'popup'.");
+  });
+}
+
 function openAddPhotoForm() {
   const popup = document.getElementById("popup");
   const addPhotoForm = document.getElementById("add-photo-form");
