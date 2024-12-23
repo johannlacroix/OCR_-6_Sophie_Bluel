@@ -256,6 +256,7 @@ const setupModals = () => {
   if (validatePhotoButton && addPhotoForm) {
     validatePhotoButton.addEventListener("click", () => {
       console.log("Clic sur 'Valider'");
+      addPhotoToAPI();
       addPhotoForm.classList.add("hidden"); // Cache modale d'ajout
     });
   }
