@@ -4,9 +4,7 @@ const token = localStorage.getItem("token");
 // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1MTg3NDkzOSwiZXhwIjoxNjUxOTYxMzM5fQ.JGN1p8YIfR-M-5eQ-Ypy6Ima5cKA4VbfL2xMr2MgHm4"
 let worksData = [];
 
-console.log("Token utilisateur :", token);
-
-//ajouter une photo à galerie
+//ajouter 1 photo à la galerie
 const addPhotoToAPI = async () => {
   const photoUploadInput = document.getElementById("photo-upload");
   const titleInput = document.getElementById("photo-title");
@@ -26,13 +24,13 @@ const addPhotoToAPI = async () => {
   formData.append("title", title);
   formData.append("category", category);
 
-  // Log des données pour debug
+  // log données pour debug
   for (let pair of formData.entries()) {
     console.log(`${pair[0]}: ${pair[1]}`);
   }
 
   try {
-    console.log("Envoi des données a l'API...");
+    // console.log("Envoi des données a l'API...");
     const response = await fetch("http://localhost:5678/api/works", {
       method: "POST",
       headers: {
@@ -47,23 +45,16 @@ const addPhotoToAPI = async () => {
       const newWork = await response.json();
       console.log("Nouvelle photo ajoutée :", newWork);
 
-      // verif structure de `newWork` avant de l'ajouter
+      // verif structure de `newWork` avant de ajouter
       if (newWork && newWork.id) {
-        worksData.push(newWork); // Ajoute l'élément à galerie
-        displayWorks("all");
-        console.log("Travaux après ajout :", worksData);
+        getWorks();
+        // console.log("Travaux après ajout :", worksData);
 
-        // Reinitialise formulaire
+        // reinitialise formulaire
         photoUploadInput.value = "";
         titleInput.value = "";
         categorySelect.value = "";
         document.getElementById("add-photo-form").classList.add("hidden");
-        alert("Photo ajoutée avec succès !");
-      } else {
-        console.warn("Structure inattendue pour la réponse :", newWork);
-        alert(
-          "La photo a été ajoutée mais une erreur s'est produite lors de la mise à jour de la galerie."
-        );
       }
     } else {
       const errorData = await response.json();
@@ -71,8 +62,32 @@ const addPhotoToAPI = async () => {
       alert(`Erreur : ${errorData.message || "Une erreur est survenue."}`);
     }
   } catch (error) {
-    console.error("Erreur lors de l'appel à l'API :", error);
-    alert("Une erreur s'est produite lors de l'envoi des données.");
+    console.error("Erreur lors de appel API :", error);
+    alert("erreur a l'envoi des donnees");
+  }
+};
+
+const deleteWork = async (workId) => {
+  try {
+    const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      // console.log(`Image avec ID ${workId} supprimée.`);
+      // Màj données locales
+      worksData = worksData.filter((work) => work.id !== workId);
+      // reafficher galeries
+      displayWorks("all");
+      populateModalGallery();
+    } else {
+      console.error(`Erreur lors de la suppression de l'image ID ${workId}`);
+    }
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'image :", error);
   }
 };
 
@@ -93,7 +108,6 @@ const handleAuthButtons = () => {
     //deconnexion logout
     logoutButton.addEventListener("click", () => {
       localStorage.removeItem("token");
-      // alert("Vous êtes déconnecté !");
       window.location.reload();
     });
   } else {
@@ -122,6 +136,7 @@ const getWorks = async () => {
     const data = await response.json();
     worksData = data;
     displayWorks("all");
+    populateModalGallery();
   } catch (error) {
     console.error("Erreur dans getWorks :", error);
   }
@@ -163,17 +178,16 @@ const setupFilters = () => {
   });
 };
 
-// ouverture modale "popup"
+// ouvrir modale "popup"/ "modifier"
 const setupEditButton = () => {
   const editButton = document.getElementById("edit-button"); // Bouton Modifier
   const popup = document.getElementById("popup"); // Modale principale
 
   if (editButton && popup) {
-    console.log("Bouton modifier trouvé. Ajout de l'événement...");
     editButton.addEventListener("click", () => {
       console.log("Bouton modifier cliqué !");
       populateModalGallery(); // charge galerie dans modale
-      popup.classList.remove("hidden"); // Affiche modale principale
+      popup.classList.remove("hidden"); // affiche modale principale
     });
   } else {
     console.error("Échec : Bouton modifier ou popup introuvable.");
@@ -188,7 +202,7 @@ const populateModalGallery = () => {
     return;
   }
 
-  galleryThumbnails.innerHTML = ""; // nettoie miniatures existantes
+  galleryThumbnails.innerHTML = ""; // vide thumbnails existantes
   worksData.forEach((work) => {
     const thumbnail = document.createElement("div");
     thumbnail.classList.add("thumbnail");
@@ -197,7 +211,7 @@ const populateModalGallery = () => {
     img.src = work.imageUrl;
     img.alt = work.title;
 
-    // Bouton de suppression
+    // Bouton supprimer 1 thumbnail
     const deleteButton = document.createElement("button");
     deleteButton.classList.add("delete-button");
 
@@ -221,12 +235,12 @@ const setupClosePopupButton = () => {
 
   if (closePopupButton && popup) {
     closePopupButton.addEventListener("click", () => {
-      popup.classList.add("hidden"); // Cache modale principale
+      popup.classList.add("hidden"); // cachee modale popup
     });
   }
 };
 
-// Gère l'ouverture de modale "Ajouter des photos"
+// ouverture de modale "Ajouter des photos"
 const setupModals = () => {
   const popup = document.getElementById("popup");
   const addPhotosButton = document.getElementById("add-photos");
@@ -234,17 +248,17 @@ const setupModals = () => {
   const closePopupButton = document.getElementById("close-popup");
   const validatePhotoButton = document.getElementById("validate-photo-button");
 
-  // Ouvre modale "Ajouter des photos" et cache modale principale
+  // ouvrir modale "Ajouter des photos" et cache modale "popup"
   if (addPhotosButton && addPhotoForm && popup) {
     addPhotosButton.addEventListener("click", () => {
       console.log("Clic sur 'Ajouter des photos'");
       popup.classList.add("hidden"); // Cache modale principale
-      addPhotoForm.classList.remove("hidden"); // Affiche modale d'ajout
-      console.log("'add-photo-form' affichée !");
+      addPhotoForm.classList.remove("hidden"); // Affiche modale d'ajout de photos
+      // console.log("'add-photo-form' affichée !");
     });
   }
 
-  // Ferme modale principale "popup"
+  // fermer modale principale "popup"
   if (closePopupButton && popup) {
     closePopupButton.addEventListener("click", () => {
       console.log("Clic sur 'Fermer la popup'");
@@ -252,7 +266,7 @@ const setupModals = () => {
     });
   }
 
-  // Ferme la modale "Ajouter des photos" lorsque bouton Valider est cliqué
+  // Ferme modale "Ajouter des photos" au clic sur btn Valider
   if (validatePhotoButton && addPhotoForm) {
     validatePhotoButton.addEventListener("click", () => {
       console.log("Clic sur 'Valider'");
@@ -260,42 +274,34 @@ const setupModals = () => {
       addPhotoForm.classList.add("hidden"); // Cache modale d'ajout
     });
   }
-
-  // Optionnel : Ajoute une gestion pour fermer la modale d'ajout si nécessaire
-  document.addEventListener("click", (event) => {
-    if (event.target === addPhotoForm) {
-      console.log("Clic à l'extérieur de 'add-photo-form'");
-      addPhotoForm.classList.add("hidden"); // Cache modale d'ajout
-    }
-  });
 };
 
-// Bouton flèche pour revenir à modale précédente
+// Bouton flèche retour à modale popup
 const backButton = document.getElementById("back-button");
 const addPhotoForm = document.getElementById("add-photo-form");
 const popup = document.getElementById("popup");
 
 if (backButton && addPhotoForm && popup) {
   backButton.addEventListener("click", () => {
-    addPhotoForm.classList.add("hidden"); // Cache modale d'ajout
-    popup.classList.remove("hidden"); // Réaffiche la modale précédente
+    addPhotoForm.classList.add("hidden"); // cache modale d'ajout
+    popup.classList.remove("hidden"); // reaffiche la modale popup
     console.log("Retour à la modale principale 'popup'.");
   });
 }
 
-// Bouton et champ d'upload
+// Bouton et champ upload
 const uploadPhotoButton = document.getElementById("upload-photo-button");
 const photoUploadInput = document.getElementById("photo-upload");
 const defaultImage = document.querySelector(".defaultImage");
 
-// Ouvre l'explorateur de fichiers au clic sur bouton
+// ouvrir explorateur de fichiers au clic sur bouton
 if (uploadPhotoButton && photoUploadInput) {
   uploadPhotoButton.addEventListener("click", () => {
     photoUploadInput.click(); // Ouvre l'explorateur de fichiers
   });
 }
 
-// Affiche l'image sélectionnée dans l'élément <img>
+// Affiche image sélectionnée dans l'élément <img>
 if (photoUploadInput && defaultImage) {
   photoUploadInput.addEventListener("change", (event) => {
     const file = event.target.files[0]; // Récupère fichier sélectionné
