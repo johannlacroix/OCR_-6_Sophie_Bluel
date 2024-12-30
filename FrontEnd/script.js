@@ -4,7 +4,7 @@ const token = localStorage.getItem("token");
 // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1MTg3NDkzOSwiZXhwIjoxNjUxOTYxMzM5fQ.JGN1p8YIfR-M-5eQ-Ypy6Ima5cKA4VbfL2xMr2MgHm4"
 let worksData = [];
 
-//ajouter 1 photo à la galerie
+//addPhotoToAPI : ajouter 1 photo à la galerie en evoyant données à l'API
 const addPhotoToAPI = async () => {
   const photoUploadInput = document.getElementById("photo-upload");
   const titleInput = document.getElementById("photo-title");
@@ -67,6 +67,7 @@ const addPhotoToAPI = async () => {
   }
 };
 
+// deleteWork : supprimer un work de l'API/BSS via son Id
 const deleteWork = async (workId) => {
   try {
     const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
@@ -91,7 +92,7 @@ const deleteWork = async (workId) => {
   }
 };
 
-// affichage boutons Login/Logout
+// handleAuthButtons : affichage boutons Login/Logout en conction du statut utilisateur
 const handleAuthButtons = () => {
   const loginButton = document.getElementById("login-button");
   const logoutButton = document.getElementById("logout-button");
@@ -100,10 +101,10 @@ const handleAuthButtons = () => {
   const filtersContainer = document.querySelector(".filters");
 
   if (token) {
-    if (logoutButton) logoutButton.style.display = "inline-block";
-    if (loginButton) loginButton.style.display = "none";
-    if (editButton) editButton.style.display = "flex";
-    if (filtersContainer) filtersContainer.style.display = "none";
+    if (logoutButton) logoutButton.style.display = "inline-block"; // affiche bouton Lougout
+    if (loginButton) loginButton.style.display = "none"; // masque bouton Login
+    if (editButton) editButton.style.display = "flex"; // affiche bouton modifier
+    if (filtersContainer) filtersContainer.style.display = "none"; // masque bouton de filtres
 
     //deconnexion logout
     logoutButton.addEventListener("click", () => {
@@ -122,7 +123,7 @@ const handleAuthButtons = () => {
   }
 };
 
-// Charge et affiche works
+// Charge et affiche les projets/ works
 const getWorks = async () => {
   try {
     const response = await fetch("http://localhost:5678/api/works", {
@@ -142,7 +143,7 @@ const getWorks = async () => {
   }
 };
 
-// affiche travaux avec filtres
+// displayWorks : affiche travaux en fonction des filtres/ catégories
 const displayWorks = (filter) => {
   const worksContainer = document.querySelector(".gallery");
   worksContainer.innerHTML = "";
@@ -166,7 +167,7 @@ const displayWorks = (filter) => {
   });
 };
 
-// config filtres
+// setupFilters : configure les boutons filtres
 const setupFilters = () => {
   const filterButtons = document.querySelectorAll(".filters button");
   filterButtons.forEach((button) => {
@@ -178,7 +179,7 @@ const setupFilters = () => {
   });
 };
 
-// ouvrir modale "popup"/ "modifier"
+// setupEditButton : ouvrir la modale "popup"/ au clic sur "modifier"
 const setupEditButton = () => {
   const editButton = document.getElementById("edit-button"); // Bouton Modifier
   const popup = document.getElementById("popup"); // Modale principale
@@ -194,8 +195,9 @@ const setupEditButton = () => {
   }
 };
 
+// poulateModalGallery : remplit la galerie de la modale popup avec les thumbnails
 const populateModalGallery = () => {
-  console.log("Chargement de la galerie dans la modale...");
+  // console.log("Chargement de la galerie dans la modale...");
   const galleryThumbnails = document.querySelector(".gallery-thumbnails");
   if (!galleryThumbnails) {
     console.error("Élément .gallery-thumbnails introuvable !");
@@ -229,6 +231,7 @@ const populateModalGallery = () => {
   });
 };
 
+// setupClosePopupButton : Config bouton de fermeture modale "popup"
 const setupClosePopupButton = () => {
   const closePopupButton = document.getElementById("close-popup");
   const popup = document.getElementById("popup");
@@ -240,7 +243,7 @@ const setupClosePopupButton = () => {
   }
 };
 
-// ouverture de modale "Ajouter des photos"
+// setupModals : ouverture de modale "Ajouter des photos" et fermeture "popup"
 const setupModals = () => {
   const popup = document.getElementById("popup");
   const addPhotosButton = document.getElementById("add-photos");
@@ -319,6 +322,7 @@ if (photoUploadInput && defaultImage) {
   });
 }
 
+// openAddPhotoForm : ouvre modale d'ajout de photos
 function openAddPhotoForm() {
   const popup = document.getElementById("popup");
   const addPhotoForm = document.getElementById("add-photo-form");
