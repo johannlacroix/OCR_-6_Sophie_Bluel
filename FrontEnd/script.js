@@ -326,10 +326,18 @@ if (photoUploadInput && defaultImage) {
 function openAddPhotoForm() {
   const popup = document.getElementById("popup");
   const addPhotoForm = document.getElementById("add-photo-form");
+  const defaultImage = document.querySelector(".defaultImage");
+  const photoUploadInput = document.getElementById("photo-upload");
 
   if (popup) popup.classList.add("hidden"); // Cache modale principale
   if (addPhotoForm) addPhotoForm.classList.remove("hidden"); // Affiche modale d'ajout
-  console.log("'add-photo-form' affichée via openAddPhotoForm !");
+
+  if (defaultImage) {
+    defaultImage.src = "assets/icons/image.png"; // Remplace par l'image par défaut
+  }
+  if (photoUploadInput) {
+    photoUploadInput.value = ""; // Réinitialise le champ input file
+  }
 }
 
 handleAuthButtons(); // affichage des boutons Login/Logout
