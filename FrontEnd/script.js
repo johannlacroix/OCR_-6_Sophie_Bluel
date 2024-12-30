@@ -330,13 +330,13 @@ function openAddPhotoForm() {
   const photoUploadInput = document.getElementById("photo-upload");
 
   if (popup) popup.classList.add("hidden"); // Cache modale principale
-  if (addPhotoForm) addPhotoForm.classList.remove("hidden"); // Affiche modale d'ajout
+  if (addPhotoForm) addPhotoForm.classList.remove("hidden"); // affiche modale d'ajout
 
   if (defaultImage) {
-    defaultImage.src = "assets/icons/image.png"; // Remplace par l'image par défaut
+    defaultImage.src = "assets/icons/image.png"; // remplace par image défaut
   }
   if (photoUploadInput) {
-    photoUploadInput.value = ""; // Réinitialise le champ input file
+    photoUploadInput.value = ""; // reinitialise champ input file
   }
 }
 
