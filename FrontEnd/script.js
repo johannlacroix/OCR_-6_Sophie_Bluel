@@ -3,6 +3,7 @@ const url = "http://localhost:5678/api/works";
 const token = localStorage.getItem("token");
 // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY1MTg3NDkzOSwiZXhwIjoxNjUxOTYxMzM5fQ.JGN1p8YIfR-M-5eQ-Ypy6Ima5cKA4VbfL2xMr2MgHm4"
 let worksData = [];
+let categoriesData = [];
 
 //addPhotoToAPI : ajouter 1 photo à la galerie en evoyant données à l'API
 const addPhotoToAPI = async () => {
@@ -123,6 +124,27 @@ const handleAuthButtons = () => {
   }
 };
 
+//générer dynamiquement le menu des filtres
+
+const getCategories = async () => {
+  try {
+    const response = await fetch("http://localhost:5678/api/categories", {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+
+    if (!response.ok) {
+      console.error("Erreur API, statut :", response.status);
+      throw new Error("Erreur lors de la récupération des catégories.");
+    }
+
+    const data = await response.json();
+    categoriesData = [...new Set(data)]; // Utilisation de Set pour garantir l'unicité
+    console.log("Catégories récupérées :", categoriesData);
+  } catch (error) {
+    console.error("Erreur dans getCategories :", error);
+  }
+};
+
 // Charge et affiche les projets/ works
 const getWorks = async () => {
   try {
@@ -134,8 +156,13 @@ const getWorks = async () => {
       console.error("Erreur API, statut :", response.status);
       throw new Error("Erreur lors de la récupération des travaux.");
     }
-    const data = await response.json();
-    worksData = data;
+
+    worksData = await response.json();
+    console.log("Travaux récupérés :", worksData); // Vérifiez la structure ici
+
+    await getCategories();
+    setupFilters();
+    categoryFilter();
     displayWorks("all");
     populateModalGallery();
   } catch (error) {
@@ -146,14 +173,16 @@ const getWorks = async () => {
 // displayWorks : affiche travaux en fonction des filtres/ catégories
 const displayWorks = (filter) => {
   const worksContainer = document.querySelector(".gallery");
-  worksContainer.innerHTML = "";
+  worksContainer.innerHTML = ""; // Réinitialiser la galerie
+
   const filteredWorks =
     filter === "all"
       ? worksData
-      : worksData.filter((work) => work.categoryId === parseInt(filter));
+      : worksData.filter((work) => work.categoryId === parseInt(filter, 10));
 
   filteredWorks.forEach((work) => {
     const workElement = document.createElement("figure");
+
     const imageElement = document.createElement("img");
     imageElement.src = work.imageUrl;
     imageElement.alt = work.title;
@@ -169,12 +198,46 @@ const displayWorks = (filter) => {
 
 // setupFilters : configure les boutons filtres
 const setupFilters = () => {
-  const filterButtons = document.querySelectorAll(".filters button");
+  const filtersContainer = document.querySelector(".filters");
+  if (!filtersContainer) {
+    console.error("Élément .filters introuvable !");
+    return;
+  }
+
+  filtersContainer.innerHTML = "";
+
+  // Bouton "Tous"
+  const allButton = document.createElement("button");
+  allButton.classList.add("filter-button", "active");
+  allButton.setAttribute("data-filter", "all");
+  allButton.textContent = "Tous";
+  filtersContainer.appendChild(allButton);
+
+  // Boutons de catégories
+  categoriesData.forEach((category) => {
+    const filterButton = document.createElement("button");
+    filterButton.classList.add("filter-button");
+    filterButton.setAttribute("data-filter", category.id); // Utilisation de l'id
+    filterButton.textContent = category.name;
+    filtersContainer.appendChild(filterButton);
+  });
+};
+
+// Fonction pour gérer le filtrage par catégorie
+const categoryFilter = () => {
+  const filterButtons = document.querySelectorAll(".filter-button");
+
   filterButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
+      // Retirer la classe active
       filterButtons.forEach((btn) => btn.classList.remove("active"));
+
+      // Ajouter la classe active
       button.classList.add("active");
-      displayWorks(event.target.getAttribute("data-filter"));
+
+      // Appliquer le filtre
+      const filter = event.target.getAttribute("data-filter");
+      displayWorks(filter);
     });
   });
 };
@@ -343,6 +406,7 @@ function openAddPhotoForm() {
 handleAuthButtons(); // affichage des boutons Login/Logout
 setupEditButton(); // Config bouton Modifier
 setupFilters(); // Config filtres
-setupModals(); // Config interactions des modales
 setupClosePopupButton(); // Config fermeture de modale
+
+setupModals(); // Config interactions des modales
 getWorks(); // Charge projets
