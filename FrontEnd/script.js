@@ -46,12 +46,12 @@ const addPhotoToAPI = async () => {
       const newWork = await response.json();
       console.log("Nouvelle photo ajoutée :", newWork);
 
-      // verif structure de `newWork` avant de ajouter
+      // verif structure de `newWork` avant d'ajouter
       if (newWork && newWork.id) {
         getWorks();
         // console.log("Travaux après ajout :", worksData);
 
-        // reinitialise formulaire
+        // reinitialiser formulaire
         photoUploadInput.value = "";
         titleInput.value = "";
         categorySelect.value = "";
@@ -82,7 +82,7 @@ const deleteWork = async (workId) => {
       // console.log(`Image avec ID ${workId} supprimée.`);
       // Màj données locales
       worksData = worksData.filter((work) => work.id !== workId);
-      // reafficher galeries
+      // reafficher galerie
       displayWorks("all");
       populateModalGallery();
     } else {
@@ -138,7 +138,7 @@ const getCategories = async () => {
     }
 
     const data = await response.json();
-    categoriesData = [...new Set(data)]; // Utilisation de Set pour garantir l'unicité
+    categoriesData = [...new Set(data)]; // Utilisation de Set pour éviter doublons
     console.log("Catégories récupérées :", categoriesData);
   } catch (error) {
     console.error("Erreur dans getCategories :", error);
@@ -158,7 +158,7 @@ const getWorks = async () => {
     }
 
     worksData = await response.json();
-    console.log("Travaux récupérés :", worksData); // Vérifiez la structure ici
+    console.log("Travaux récupérés :", worksData); // affiche les travaux récupérés
 
     await getCategories();
     setupFilters();
@@ -206,33 +206,33 @@ const setupFilters = () => {
 
   filtersContainer.innerHTML = "";
 
-  // Bouton "Tous"
+  // bouton "Tous"
   const allButton = document.createElement("button");
   allButton.classList.add("filter-button", "active");
   allButton.setAttribute("data-filter", "all");
   allButton.textContent = "Tous";
   filtersContainer.appendChild(allButton);
 
-  // Boutons de catégories
+  // Button des catégories
   categoriesData.forEach((category) => {
     const filterButton = document.createElement("button");
     filterButton.classList.add("filter-button");
-    filterButton.setAttribute("data-filter", category.id); // Utilisation de l'id
+    filterButton.setAttribute("data-filter", category.id); // utilisation de l'id
     filterButton.textContent = category.name;
     filtersContainer.appendChild(filterButton);
   });
 };
 
-// Fonction pour gérer le filtrage par catégorie
+// gestion de filtrage par categorie
 const categoryFilter = () => {
   const filterButtons = document.querySelectorAll(".filter-button");
 
   filterButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
-      // Retirer la classe active
+      // desacive la classe
       filterButtons.forEach((btn) => btn.classList.remove("active"));
 
-      // Ajouter la classe active
+      // active la classe active
       button.classList.add("active");
 
       // Appliquer le filtre
@@ -242,15 +242,15 @@ const categoryFilter = () => {
   });
 };
 
-// setupEditButton : ouvrir la modale "popup"/ au clic sur "modifier"
+// setupEditButton : ouvrir la modale "popup" au clic sur "modifier"
 const setupEditButton = () => {
   const editButton = document.getElementById("edit-button"); // Bouton Modifier
-  const popup = document.getElementById("popup"); // Modale principale
+  const popup = document.getElementById("popup"); // modale principale
 
   if (editButton && popup) {
     editButton.addEventListener("click", () => {
-      console.log("Bouton modifier cliqué !");
-      populateModalGallery(); // charge galerie dans modale
+      // console.log("Bouton modifier cliqué !");
+      populateModalGallery(); // charge la galerie dans modale
       popup.classList.remove("hidden"); // affiche modale principale
     });
   } else {
@@ -260,7 +260,7 @@ const setupEditButton = () => {
 
 // poulateModalGallery : remplit la galerie de la modale popup avec les thumbnails
 const populateModalGallery = () => {
-  // console.log("Chargement de la galerie dans la modale...");
+  // console.log("Chargement de la galerie dans la modale");
   const galleryThumbnails = document.querySelector(".gallery-thumbnails");
   if (!galleryThumbnails) {
     console.error("Élément .gallery-thumbnails introuvable !");
@@ -404,9 +404,9 @@ function openAddPhotoForm() {
 }
 
 handleAuthButtons(); // affichage des boutons Login/Logout
-setupEditButton(); // Config bouton Modifier
+setupEditButton(); // config bouton Modifier
 setupFilters(); // Config filtres
-setupClosePopupButton(); // Config fermeture de modale
+setupClosePopupButton(); // config fermeture de modale
 
-setupModals(); // Config interactions des modales
-getWorks(); // Charge projets
+setupModals(); // config interactions des modales
+getWorks(); // charge projets
